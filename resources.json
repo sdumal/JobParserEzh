@@ -1,0 +1,41 @@
+[
+  {
+    "name": "HackerNews Jobs",
+    "type": "rss",
+    "url": "https://hnrss.org/jobs"
+  },
+  {
+    "name": "RemoteOK",
+    "type": "rss",
+    "url": "https://remoteok.io/remote-jobs.rss"
+  },
+  {
+    "name": "AngelList Jobs",
+    "type": "rss",
+    "url": "https://angel.co/jobs.rss"
+  },
+  {
+    "name": "Stack Overflow Jobs",
+    "type": "html",
+    "url": "https://stackoverflow.com/jobs?q=python",
+    "selectors": {
+      "container": ".listResults .result",
+      "title": ".job-link",
+      "link": ".job-link",
+      "company": ".employer",
+      "location": ".location"
+    }
+  },
+  {
+    "name": "GitHub Jobs",
+    "type": "html",
+    "url": "https://jobs.github.com/positions.json?search=python",
+    "selectors": {
+      "container": ".position",
+      "title": ".title",
+      "link": ".title a",
+      "company": ".company",
+      "location": ".location"
+    }
+  }
+]
