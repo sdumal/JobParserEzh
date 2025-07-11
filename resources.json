@@ -5,11 +5,6 @@
     "url": "https://hnrss.org/jobs"
   },
   {
-    "name": "RemoteOK",
-    "type": "rss",
-    "url": "https://remoteok.io/remote-jobs.rss"
-  },
-  {
     "name": "AngelList Jobs",
     "type": "rss",
     "url": "https://angel.co/jobs.rss"
@@ -26,16 +21,32 @@
       "location": ".location"
     }
   },
-  {
-    "name": "GitHub Jobs",
-    "type": "html",
-    "url": "https://jobs.github.com/positions.json?search=python",
-    "selectors": {
-      "container": ".position",
-      "title": ".title",
-      "link": ".title a",
-      "company": ".company",
-      "location": ".location"
-    }
+    {
+    "name": "PracujIT pl",
+    "type": "rss",
+    "url": "https://pracujwit.pl/rss/Pozostale-oferty/"
+  },
+    {
+    "name": "PracujIT pl",
+    "type": "rss",
+    "url": "https://pracujwit.pl/rss/Administracja/"
+  },
+    {
+    "name": "Praca PL",
+    "type": "rss",
+    "url": "https://www.praca.pl/rss/index/oid:2.xml"
+  },
+    {
+    "name": "Praca PL",
+    "type": "rss",
+    "url": "https://www.praca.pl/rss/index/oid:3.xml"
+  },    {
+    "name": "Praca PL",
+    "type": "rss",
+    "url": "https://www.praca.pl/rss/index/oid:10.xml"
+  },    {
+    "name": "Praca PL",
+    "type": "rss",
+    "url": "https://www.praca.pl/rss/index/oid:14.xml"
   }
 ]
