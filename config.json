@@ -1,0 +1,19 @@
+{
+  "telegram": {
+    "digest_format": "grouped",
+    "max_jobs_per_source": 10,
+    "show_stats": true,
+    "show_company": true,
+    "show_location": true,
+    "include_description": false
+  },
+  "scheduler": {
+    "scan_interval_hours": 1,
+    "report_time": "09:00",
+    "timezone": "UTC"
+  },
+  "database": {
+    "cleanup_days": 30,
+    "max_jobs_per_source": 1000
+  }
+}
