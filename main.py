@@ -67,6 +67,17 @@ class Job:
         unique_string = f"{self.title}|{self.link}|{self.source}"
         return hashlib.md5(unique_string.encode()).hexdigest()
 
+class JobLocationFilter:
+    """Фильтр вакансий по местоположению"""
+
+    def __init__(self, allowed_locations: List[str]):
+        # Приводим все разрешенные локации к нижнему регистру для удобства сравнения
+        self.allowed_locations = [loc.lower() for loc in allowed_locations]
+
+    def is_location_allowed(self, job: Job) -> bool:
+        location = (job.location or '').lower()
+        return any(allowed in location for allowed in self.allowed_locations)
+
 class DatabaseManager:
     """Менеджер базы данных SQLite"""
     
@@ -414,6 +425,7 @@ class JobMonitor:
             config=self.config.get('telegram', {})
         )
         self.job_filter = JobFilter(self.keywords)
+        self.location_filter = JobLocationFilter(["gdansk", "remote"])
         self.stats = {
             'total_viewed': 0,
             'total_added': 0,
@@ -480,7 +492,7 @@ class JobMonitor:
                     for job in jobs:
                         self.stats['total_viewed'] += 1
                         
-                        if self.job_filter.matches(job):
+                        if self.job_filter.matches(job) and self.location_filter.is_location_allowed(job):
                             if self.db.add_job(job):
                                 self.stats['total_added'] += 1
                                 logger.info(f"Добавлена вакансия: {job.title}")
