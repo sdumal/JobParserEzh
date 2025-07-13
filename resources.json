@@ -10,15 +10,15 @@
     "url": "https://angel.co/jobs.rss"
   },
   {
-    "name": "Stack Overflow Jobs",
+    "name": "DOU Jobs",
     "type": "html",
-    "url": "https://stackoverflow.com/jobs?q=python",
+    "url": "https://jobs.dou.ua/vacancies/?category=Python&remote&exp=0-1",
     "selectors": {
-      "container": ".listResults .result",
-      "title": ".job-link",
-      "link": ".job-link",
-      "company": ".employer",
-      "location": ".location"
+      "container": "div.vacancy",
+      "title": "div.title a.vt",
+      "link": "div.title a.vt",
+      "company": "div.sh-info",
+      "location": "span.cities"
     }
   },
     {

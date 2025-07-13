@@ -197,40 +197,44 @@ class JobParser:
             logger.error(f"Ошибка парсинга RSS {url}: {e}")
             return []
     
-    async def parse_html(self, url: str, source_name: str, selectors: Dict[str, str]) -> List[Job]:
-        """Парсинг HTML-страницы с кастомными селекторами"""
+    async def parse_html(self, url: str, source_name: str, selectors: Dict[str, str]) -> List[Job]: 
+    #"""Парсинг HTML-страницы с кастомными селекторами (адаптировано под DOU)"""
         try:
-            async with self.session.get(url) as response:
+            headers = {"User-Agent": "Mozilla/5.0 (compatible; JobBot/1.0)"}
+            async with self.session.get(url, headers=headers) as response:
                 content = await response.text()
-            
+
             soup = BeautifulSoup(content, 'html.parser')
             jobs = []
-            
+
             # Поиск контейнеров с вакансиями
-            job_containers = soup.select(selectors.get('container', '.job'))
-            
+            job_containers = soup.select(selectors.get('container', '.vacancy'))
+
             for container in job_containers:
-                title_elem = container.select_one(selectors.get('title', '.title'))
-                link_elem = container.select_one(selectors.get('link', 'a'))
-                desc_elem = container.select_one(selectors.get('description', '.description'))
-                company_elem = container.select_one(selectors.get('company', '.company'))
-                location_elem = container.select_one(selectors.get('location', '.location'))
-                
+                title_elem = container.select_one(selectors.get('title', 'div.title a.vt'))
+                link_elem = title_elem  # В DOU ссылка в том же элементе, что и заголовок
+                desc_elem = container.select_one(selectors.get('description', 'div.sh-info'))
+                company_elem = desc_elem  # В DOU описание содержит и компанию
+                location_elem = container.select_one(selectors.get('location', 'span.cities'))
+
                 if title_elem and link_elem:
                     job = Job(
                         title=title_elem.get_text(strip=True),
                         description=desc_elem.get_text(strip=True) if desc_elem else '',
                         link=urljoin(url, link_elem.get('href', '')),
                         source=source_name,
-                        company=company_elem.get_text(strip=True) if company_elem else '',
+                        company=company_elem.get_text(strip=True).split('—')[0] if company_elem else '',
                         location=location_elem.get_text(strip=True) if location_elem else ''
                     )
                     jobs.append(job)
-            
+
+            logger.info(f"{len(jobs)} вакансий найдено на {source_name}")
             return jobs
+
         except Exception as e:
             logger.error(f"Ошибка парсинга HTML {url}: {e}")
             return []
+
 
 class JobFilter:
     """Фильтр вакансий по ключевым словам"""
@@ -425,7 +429,7 @@ class JobMonitor:
             config=self.config.get('telegram', {})
         )
         self.job_filter = JobFilter(self.keywords)
-        self.location_filter = JobLocationFilter(["gdansk", "remote"])
+        self.location_filter = JobLocationFilter(["gdansk", "remote", "poland"])
         self.stats = {
             'total_viewed': 0,
             'total_added': 0,
@@ -613,4 +617,11 @@ async def main():
         await monitor.send_daily_report()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except RuntimeError as e:
+        import sys
+        if str(e).startswith("Event loop is closed") and sys.platform.startswith("win"):
+            logger.warning("RuntimeError suppressed: Event loop is closed (Windows quirk)")
+        else:
+            raise
